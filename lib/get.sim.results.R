@@ -10,7 +10,7 @@
 #' 
 get.sim.results <- function(raw.df, summary.df, 
                             brushing.fingerprint,
-                            brushing.fingerprint.sd,
+                            brushing.fingerprint.sd = NULL,
                             similarity.euclidean.m = similarity.euclidean, 
                             similarity.boolean.m = similarity.boolean,
                             sigma = 1,
@@ -18,30 +18,20 @@ get.sim.results <- function(raw.df, summary.df,
   cores <- detectCores()
   cl <- makeCluster(cores)
   registerDoParallel(cl)
-  times <- unique(summary.df$Timestamp)
+  times <- unique(summary.df$time_minute)
   sim.results.e <- foreach(t = seq_along(times), .combine = c) %dopar% {
-    return(sim = similarity.euclidean.m(as.data.frame(brushing.fingerprint)[4,], 
-                                        summary.df[summary.df$Timestamp == times[t], ][4,]))
+    return(sim = similarity.euclidean.m(as.data.frame(brushing.fingerprint)[1,], 
+                                        summary.df[summary.df$time_minute == times[t], ][1,]))
   }
-  sim.results.b <- foreach(t = seq_along(times), .combine = rbind) %dopar% {
-    return(sim = similarity.boolean.m(brushing.fingerprint = as.data.frame(brushing.fingerprint)[4,], 
-                                      brushing.fingerprint.sd = as.data.frame(brushing.fingerprint.sd)[4,], 
-                                      sigma = sigma, 
-                                      d = summary.df[summary.df$Timestamp == times[t], ][4,]))
-  }
+  
   stopCluster(cl)
   
-  sim.results <- data.frame(times = times, sim.e = sim.results.e, sim.b = sim.results.b)
+  sim.results <- data.frame(times = times, sim.e = sim.results.e)
   
   sim.results$event.e <- ifelse(sim.results$sim.e < close, 1, 0)
-  sim.results$event.b <- ifelse(sim.results %>% select(sim.b.1:sim.b.4) %>% apply(., 1, sum) == 4, 1, 0)
+ 
   
-  sim.results %>% filter(event.e == 1 )
-  sim.results %>% filter(event.b == 1)
-  sim.results %>% filter(event.e == 1 & event.b == 1)
-  
-  sim.results$event <- ifelse(sim.results$event.e == 1 &
-                                sim.results$event.b == 1, 
+  sim.results$event <- ifelse(sim.results$event.e == 1 , 
                               1,0)
   
   counter <- 0

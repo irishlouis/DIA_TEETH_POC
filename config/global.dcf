@@ -1,10 +1,10 @@
 version: 0.6
-data_loading: TRUE
+data_loading: FALSE
 cache_loading: TRUE
 recursive_loading: FALSE
 munging: FALSE
 logging: FALSE
-load_libraries: FALSE
+load_libraries: TRUE
 libraries: reshape2, plyr, ggplot2, stringr, lubridate, dplyr, gridExtra, zoo, doParallel, data.table, caret
 as_factors: TRUE
 data_tables: FALSE

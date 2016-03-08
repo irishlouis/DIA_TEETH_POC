@@ -1,4 +1,6 @@
 # format the data
-org.df <- format.df(org.df)
-test.df <- format.df(test.df)
+df <- format.df(df)
 test.new <- format.df(test.new)
+
+cache("df")
+cache("test.new")

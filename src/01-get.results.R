@@ -1,3 +1,15 @@
+# filter df to only include test minutes
+
+eval.df <- df %>% filter(!time_minute %in% training.minutes)
+eval.df.summary <- df.summary %>% filter(!time_minute %in% training.minutes)
+
+get.sim.results(raw.df = eval.df, 
+                summary.df = eval.df.summary, 
+                brushing.fingerprint = brushing.fingerprint.mean,
+                sigma = 3.5, 
+                close = 0.11)
+
+
 # save.image("test_brushing_pattern.RDATA")
 
 org.result <- get.sim.results(raw.df = org.df,summary.df = org.df.summary, 

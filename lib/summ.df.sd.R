@@ -7,14 +7,19 @@
 #' @export
 #'
 #' @examples
-summ.df.sd <- function(d, epoch = 60) {
-  splits <- rollapply(1:nrow(d), epoch*100, function(x) x  )
-  splits <- as.data.frame(splits)
-  d <- d %>% select( -Timestamp, -time_minute, -vector.dir)
-  tmp <- apply(splits, 1, function(x) {apply(d[x, ], 2, summary)})
-  tmp <- as.data.frame(tmp)
-  return(matrix(apply(tmp, 1, sd), 
+summ.df.sd <- function(d, epoch = 60, freq = 100) {
+  # splits <- rollapply(1:nrow(d), epoch*freq, function(x) x  )
+  # splits <- as.data.frame(splits)
+  # splits <- as.data.frame(splits)
+  d <- d %>% select( vector.mag)
+  tmp <- data.frame()
+  for(i in 1:(nrow(d) - (epoch * freq) + 1)){
+    split <- i:(i+(epoch * freq)-1)
+    tmp <- rbind(tmp, summary(d[split, ] ))
+  }
+  
+  return(matrix(apply(tmp, 2, sd), 
                 nrow = 6, 
                 dimnames = list(rownames = c("Min.","Qu1st","Median", "Mean","Qu3rd","Max"),
-                                colnames = c("AccelerometerX","AccelerometerY","AccelerometerZ","vector.mag"))))
+                                colnames = c("vector.mag"))))
 }

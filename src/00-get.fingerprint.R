@@ -1,26 +1,46 @@
-brushing.summary <- lapply(list(df1, df2, df3, df4), summ.df.mean)
 
-brushing.summary
+tmp <- df %>% filter(brushing == 1) 
+minutes <- unique(tmp$time_minute)
 
-brushing.summary.dir <- lapply(list(df1, df2, df3, df4), function(x) round(table(x$vector.dir)/nrow(x), 2))
-brushing.summary.dir
+# partition testing / training minutes
+set.seed(789456)
+training.minutes <- sample(minutes, 0.7 * length(minutes), replace = F)
+testing.minutes <- minutes[-which(minutes %in% training.minutes)]
 
-brushing.fingerprint <- Reduce('+', brushing.summary) / length(brushing.summary)
 
-brushing.fingerprint.sd <- lapply(list(df1, df2, df3, df4), summ.df.sd)
-brushing.fingerprint.sd <- Reduce('+', brushing.fingerprint.sd) / length(brushing.fingerprint.sd)
-brushing.fingerprint.sd
 
-brushing.fingerprint <- cbind(t(brushing.fingerprint), 
-                              mean.dir5 = c(0,0,0,mean(sapply(brushing.summary.dir, function(x) x[5]))),
-                              sd.dir5 = c(0,0,0, sd(sapply(brushing.summary.dir, function(x) x[5]))))
-brushing.fingerprint
+# partition hou
 
-save(brushing.fingerprint, file = "brushing.fingerprint.RDA" )
+brushing.summary.mean <- lapply(training.minutes, function(x) summ.df.mean(d = tmp %>% 
+                                                                             filter(time_minute == x) %>% 
+                                                                             select(-brushing), 
+                                                           epoch = 60))
+cache("brushing.summary.mean")
 
-brushing.fingerprint.sd  <- cbind(t(brushing.fingerprint.sd), 
-                                  sd.dir5 = c(0,0,0, sd(sapply(brushing.summary.dir, function(x) x[5]))))
+# brushing.summary.dir <- lapply(hours, function(x) round(table(tmp[hour == x, vector.dir])/nrow(tmp[hour=x,]), 2))
+# brushing.summary.dir
 
-brushing.fingerprint.sd
+brushing.fingerprint.mean <- Reduce('+', brushing.summary.mean) / length(brushing.summary.mean)
 
-save(brushing.fingerprint.sd, file = "brushing.fingerprint.sd.RDA" )
+# brushing.summary.sd <- lapply(training.minutes, function(x) summ.df.sd(d = tmp %>% 
+#                                                                          filter(time_minute == x) %>% 
+#                                                                          select(-brushing), 
+#                                                                 epoch = 60) )
+# cache("brushing.summary.sd")
+
+# brushing.fingerprint.sd <- Reduce('+', brushing.fingerprint.sd) / length(brushing.fingerprint.sd)
+# brushing.fingerprint.sd
+
+brushing.fingerprint.mean <- t(brushing.fingerprint.mean)
+
+brushing.fingerprint.mean
+
+cache("brushing.fingerprint.mean" )
+
+# brushing.fingerprint.sd  <- t(brushing.fingerprint.sd)
+# 
+# brushing.fingerprint.sd
+
+# cache("brushing.fingerprint.sd")
+
+rm(tmp, minutes)
