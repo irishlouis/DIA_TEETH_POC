@@ -1,5 +1,4 @@
 # filter df to only include test minutes
-
 eval.df <- df %>% filter(!time_minute %in% training.minutes)
 eval.df.summary <- df.summary %>% filter(!time_minute %in% training.minutes)
 
@@ -12,17 +11,17 @@ get.sim.results(summary.df = test.perf.summary,
                 close = 0.080)
 
 # run on evaluation dataset
-results <- get.sim.results(summary.df = eval.df.summary, 
+eval.results <- get.sim.results(summary.df = eval.df.summary, 
                 brushing.fingerprint = brushing.fingerprint,
                 close = 0.080)
 
 # confusion matrix of evaluation results
-confusionMatrix(results$event.e, eval.df.summary$brushing)
+confusionMatrix(eval.results$event.e, eval.df.summary$brushing)
 
 ###################################################################################
 
 # try on different subject
-new.subj.results <- get.sim.results(summary.df = test.new.summary, 
+test.new.results <- get.sim.results(summary.df = test.new.summary, 
                 brushing.fingerprint = brushing.fingerprint,
                 close = 0.080)
 
