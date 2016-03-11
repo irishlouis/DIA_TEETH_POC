@@ -1,19 +1,15 @@
 #' get.sim.results
 #'
-#' @param raw.df -
 #' @param summary.df 
 #' @param brushing.fingerprint 
-#' @param similarity 
+#' @param similarity.euclidean.m
 #' @param close
 #'
-#' @return
+#' @return sim.results
 #' 
-get.sim.results <- function(raw.df, summary.df, 
+get.sim.results <- function(summary.df, 
                             brushing.fingerprint,
-                            brushing.fingerprint.sd = NULL,
                             similarity.euclidean.m = similarity.euclidean, 
-                            similarity.boolean.m = similarity.boolean,
-                            sigma = 1,
                             close = 2){
   cores <- detectCores()
   cl <- makeCluster(cores)
@@ -29,21 +25,6 @@ get.sim.results <- function(raw.df, summary.df,
   sim.results <- data.frame(times = times, sim.e = sim.results.e)
   
   sim.results$event.e <- ifelse(sim.results$sim.e < close, 1, 0)
- 
   
-  sim.results$event <- ifelse(sim.results$event.e == 1 , 
-                              1,0)
-  
-  counter <- 0
-  for (i in 2:length(sim.results$event)) {
-    if(sim.results$event[i] == 1 & sim.results$event[i-1] == 0) counter <- counter + 1
-    if(sim.results$event[i] == 1 ) sim.results$event[i] <- counter
-  }
-  message(paste(counter, " events of brushing teeth have been identified"))
-  
-  result <- left_join(raw.df, 
-                      sim.results, 
-                      by = c("time_minute" = "times"))
-  
-  return(result)
+  return(sim.results)
 }
