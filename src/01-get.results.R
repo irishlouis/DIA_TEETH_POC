@@ -3,34 +3,29 @@
 eval.df <- df %>% filter(!time_minute %in% training.minutes)
 eval.df.summary <- df.summary %>% filter(!time_minute %in% training.minutes)
 
-get.sim.results(raw.df = eval.df, 
-                summary.df = eval.df.summary, 
-                brushing.fingerprint = brushing.fingerprint.mean,
-                sigma = 3.5, 
-                close = 0.11)
+test.perf <- df %>% filter(time_minute %in% training.minutes)
+test.perf.summary <- df.summary %>% filter(time_minute %in% training.minutes)
 
+# calibrate on test.df.summary
+get.sim.results(summary.df = test.perf.summary, 
+                brushing.fingerprint = brushing.fingerprint,
+                close = 0.080)
 
-# save.image("test_brushing_pattern.RDATA")
+# run on evaluation dataset
+results <- get.sim.results(summary.df = eval.df.summary, 
+                brushing.fingerprint = brushing.fingerprint,
+                close = 0.080)
 
-org.result <- get.sim.results(raw.df = org.df,summary.df = org.df.summary, 
-                              brushing.fingerprint = brushing.fingerprint, 
-                              brushing.fingerprint.sd = brushing.fingerprint.sd, 
-                              sigma = 3.5, close = 0.11)
-org.result %>% select(time_minute, sim.e,  event) %>% filter(event > 0) %>% distinct()
+# confusion matrix of evaluation results
+confusionMatrix(results$event.e, eval.df.summary$brushing)
 
-# 100% on training dataset
+###################################################################################
 
+# try on different subject
+new.subj.results <- get.sim.results(summary.df = test.new.summary, 
+                brushing.fingerprint = brushing.fingerprint,
+                close = 0.080)
 
-test.result <- get.sim.results(raw.df = test.df, summary.df = test.df.summary, 
-                               brushing.fingerprint = brushing.fingerprint, 
-                               brushing.fingerprint.sd = brushing.fingerprint.sd, 
-                               sigma = 3.5, close = 0.11)
-test.result %>% select(time_minute, sim.e,  event) %>% filter(event > 0) %>% distinct()
+confusionMatrix(new.subj.results$event.e, test.new.summary$brushing)
 
-# 66% and 6 FP's
-
-new.result <- get.sim.results(raw.df = test.new, summary.df = test.new.summary, 
-                              brushing.fingerprint = brushing.fingerprint, 
-                              brushing.fingerprint.sd = brushing.fingerprint.sd, 
-                              sigma = 3.5, close = 0.11)
-new.result %>% select(time_minute, sim.e,  event) %>% filter(event > 0) %>% distinct()
+# finds none

@@ -7,40 +7,35 @@ set.seed(789456)
 training.minutes <- sample(minutes, 0.7 * length(minutes), replace = F)
 testing.minutes <- minutes[-which(minutes %in% training.minutes)]
 
+# get summary from training minutes of brushing
+brushing.summary.mean <- lapply(training.minutes, function(x) 
+  summ.df.mean(d = tmp %>%
+                 filter(time_minute == x) %>%
+                 select(-brushing),
+               epoch = 60))
 
-
-# partition hou
-
-brushing.summary.mean <- lapply(training.minutes, function(x) summ.df.mean(d = tmp %>% 
-                                                                             filter(time_minute == x) %>% 
-                                                                             select(-brushing), 
-                                                           epoch = 60))
 cache("brushing.summary.mean")
 
-# brushing.summary.dir <- lapply(hours, function(x) round(table(tmp[hour == x, vector.dir])/nrow(tmp[hour=x,]), 2))
-# brushing.summary.dir
-
+# get mean 
 brushing.fingerprint.mean <- Reduce('+', brushing.summary.mean) / length(brushing.summary.mean)
-
-# brushing.summary.sd <- lapply(training.minutes, function(x) summ.df.sd(d = tmp %>% 
-#                                                                          filter(time_minute == x) %>% 
-#                                                                          select(-brushing), 
-#                                                                 epoch = 60) )
-# cache("brushing.summary.sd")
-
-# brushing.fingerprint.sd <- Reduce('+', brushing.fingerprint.sd) / length(brushing.fingerprint.sd)
-# brushing.fingerprint.sd
-
 brushing.fingerprint.mean <- t(brushing.fingerprint.mean)
 
-brushing.fingerprint.mean
+# get peak summary for each training minute
+peak.summary <- lapply(training.minutes, function(x)
+  (tmp %>% filter(time_minute == x) %>% select(vector.mag) %>% apply(.,2, function(v) get.peak.summary(v, k=10, freq=100)) %>% t())
+)
 
-cache("brushing.fingerprint.mean" )
+# get summaries of peak data
+peak.summary.averages <- sapply(peak.summary, function(x) x[1,]) %>% apply(1, mean)
+peak.per.sec.sd <- sapply(peak.summary, function(x) x[1,]) %>% apply(1, sd)
 
-# brushing.fingerprint.sd  <- t(brushing.fingerprint.sd)
-# 
-# brushing.fingerprint.sd
+peak.summary <- data.frame(avg.peaks.per.sec = peak.summary.averages[1],
+                           sd.peaks.per.sec = peak.per.sec.sd[2],
+                           avg.period = peak.summary.averages[2],
+                           sd.period = peak.summary.averages[3])
 
-# cache("brushing.fingerprint.sd")
+brushing.fingerprint <- cbind(brushing.fingerprint.mean, peak.summary)
+
+cache("brushing.fingerprint" )
 
 rm(tmp, minutes)
