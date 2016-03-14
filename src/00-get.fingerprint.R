@@ -37,5 +37,7 @@ peak.summary <- data.frame(avg.peaks.per.sec = peak.summary.averages[1],
 brushing.fingerprint <- cbind(brushing.fingerprint.mean, peak.summary)
 
 cache("brushing.fingerprint" )
+cache("training.minutes")
+cache("testing.minutes")
 
 rm(tmp, minutes)
