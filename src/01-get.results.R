@@ -25,6 +25,10 @@ test.new.results <- get.sim.results(summary.df = test.new.summary,
                 brushing.fingerprint = brushing.fingerprint,
                 close = 0.080)
 
-confusionMatrix(new.subj.results$event.e, test.new.summary$brushing)
+# confusion matrix of evaluation results
+confusionMatrix(test.new.results$event.e, test.new.summary$brushing)
 
 # finds none
+
+# cache results
+cache("eval.results", "test.new.results")
