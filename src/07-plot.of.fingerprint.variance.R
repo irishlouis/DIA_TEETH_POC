@@ -5,7 +5,7 @@ brushing.fingerprint
 
 
 # peaks per second
-ggplot(df.summary %>% select(time_minute, peaks.per.sec), 
+ggplot(df.summary %>% select(time_minute, peaks.per.sec) %>% mutate(date = floor_date(time_minute, "day")), 
        aes(x =time_minute)) + 
   geom_line(aes(y = peaks.per.sec)) + 
   geom_vline(xintercept = c(as.numeric(dmy_hms("20/01/2016 170200", tz = "GMT")),
@@ -17,7 +17,8 @@ ggplot(df.summary %>% select(time_minute, peaks.per.sec),
                             as.numeric(dmy_hms("26/02/2016 073100", tz = "GMT"))
   ), col = "red") +
   geom_hline(yintercept = brushing.fingerprint$avg.peaks.per.sec, col = "blue") +
-  labs(title = "peaks per sec")
+  labs(title = "peaks per sec") +
+  facet_wrap(~date, ncol = 2, scales = "free_x")
 
 # avg.period 
 ggplot(test.summary %>% filter(variable == "vector.mag",

@@ -1,4 +1,5 @@
 
+# create tmp df - raw data for brushing events
 tmp <- df %>% filter(brushing == 1) 
 minutes <- unique(tmp$time_minute)
 
@@ -22,7 +23,11 @@ brushing.fingerprint.mean <- t(brushing.fingerprint.mean)
 
 # get peak summary for each training minute
 peak.summary <- lapply(training.minutes, function(x)
-  (tmp %>% filter(time_minute == x) %>% select(vector.mag) %>% apply(.,2, function(v) get.peak.summary(v, k=10, freq=100)) %>% t())
+  (tmp %>% 
+     filter(time_minute == x) %>% 
+     select(vector.mag) %>% 
+     apply(.,2, 
+           function(v) get.peak.summary(v, k=10, freq=100)) %>% t())
 )
 
 # get summaries of peak data
