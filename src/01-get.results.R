@@ -31,4 +31,5 @@ confusionMatrix(test.new.results$event.e, test.new.summary$brushing)
 # finds none
 
 # cache results
-cache("eval.results", "test.new.results")
+cache("eval.results")
+cache("test.new.results")
