@@ -37,11 +37,9 @@ df.summary$brushing <- ifelse(df.summary$time_minute %in% brushing.minutes, 1, 0
 brushing.minutes.new <- c(dmy_hms("25/02/2016 214200", tz = "GMT"),
                           dmy_hms("25/02/2016 214300", tz = "GMT"),
                           dmy_hms("25/02/2016 214400", tz = "GMT"),
-                          dmy_hms("25/02/2016 214500", tz = "GMT"),
                           dmy_hms("26/02/2016 080800", tz = "GMT"),
                           dmy_hms("26/02/2016 080900", tz = "GMT"),
-                          dmy_hms("26/02/2016 081000", tz = "GMT"),
-                          dmy_hms("26/02/2016 081100", tz = "GMT"))
+                          dmy_hms("26/02/2016 081000", tz = "GMT"))
 
 test.new$brushing <- ifelse(test.new$time_minute %in% brushing.minutes.new, 1, 0)
 test.new.summary$brushing <- ifelse(test.new.summary$time_minute %in% brushing.minutes.new, 1, 0)
