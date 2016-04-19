@@ -7,18 +7,22 @@
 #'
 #' @return
 #' 
-similarity.boolean <- function(brushing.fingerprint, brushing.fingerprint.sd, sigma = 1, d){
-  tmp <- brushing.fingerprint$Mean + (sigma * brushing.fingerprint.sd$Mean * c(-1,1))
-  close.mean <- d$Mean >= tmp[1] & d$Mean <= tmp[2]
-  tmp <- brushing.fingerprint$Median + (sigma * brushing.fingerprint.sd$Median * c(-1,1))
-  close.median <- d$Median >= tmp[1] & d$Median <= tmp[2]
-  # don't have sd for peaks per second of teeth brushing events
-  tmp <- brushing.fingerprint$peaks.per.sec + 
-    (sigma * brushing.fingerprint.sd$peak.per.sec.sd * c(-1,1))
-  close.peak.rate <- d$peaks.per.sec >= tmp[1] & d$peaks.per.sec <= tmp[2]
+similarity.boolean <- function(brushing.fingerprint, d, close){
   
-  tmp <- brushing.fingerprint$avg.period + (sigma * brushing.fingerprint$sd.period * c(-1,1))
-  close.peak.period <- d$avg.period >= tmp[1] & d$avg.period <= tmp[2]
+  close.avg.peak.rate <- d$peaks.per.sec > (1-close) * brushing.fingerprint$avg.peaks.per.sec &
+    d$peaks.per.sec < (1+close) * brushing.fingerprint$avg.peaks.per.sec
   
-  return(c(close.mean, close.median, close.peak.rate, close.peak.period))
+  close.avg.peak.period <- d$avg.period > (1-close) * brushing.fingerprint$avg.period &
+    d$avg.period < (1+close) * brushing.fingerprint$avg.period
+  
+  close.sd.peak.period <- d$sd.period > (0.66) * brushing.fingerprint$sd.period &
+    d$sd.period < (1.33) * brushing.fingerprint$sd.period
+  
+  close.mean <- d$Mean > (1-close/3) * brushing.fingerprint$Mean &
+    d$Mean < (1+close/3) * brushing.fingerprint$Mean
+  
+  close.median <- d$Median > (1-close/3) * brushing.fingerprint$Median &
+    d$Median < (1+close/3) * brushing.fingerprint$Median
+  
+  return(sum(close.avg.peak.rate, close.avg.peak.period, close.sd.peak.period, close.mean, close.median))
 }
