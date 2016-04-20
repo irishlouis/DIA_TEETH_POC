@@ -72,4 +72,8 @@ confusionMatrix(predict(nnet_ensemble, newdata=testing, type='raw'),
 
 stopCluster(cl)
 
+cache('model_list')
+cache('greedy_ensemble')
+cache('nnet_ensemble')
+
 
