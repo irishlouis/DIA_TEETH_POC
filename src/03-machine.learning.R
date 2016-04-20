@@ -1,5 +1,5 @@
 head(df.summary)
-set.seed(234)
+set.seed(7654)
 # partition data for building model
 inTrain <- createDataPartition(df.summary$brushing, p = .6, list = FALSE)
 training <- df.summary[inTrain, ] %>% mutate(brushing = as.factor(ifelse(brushing == 1, "y", "n")))
@@ -15,7 +15,7 @@ my_control <- caret::trainControl(
 
 # set up for parallel processing
 # install.packages("doParallel")
-cores <- detectCores()
+cores <- detectCores()-1
 cl <- makeCluster(cores)
 registerDoParallel(cl)
 
@@ -48,9 +48,9 @@ require(pROC)
 
 # create a stack of model list using GLM
 # note defining model control inside of training call here
-glm_ensemble <- caretStack(
+nnet_ensemble <- caretStack(
   model_list, 
-  method='glm',
+  method='nnet',
   metric='ROC',
   trControl=trainControl(
     method='boot',
@@ -65,8 +65,10 @@ glm_ensemble <- caretStack(
 confusionMatrix(predict(greedy_ensemble, newdata=testing, type='raw'), 
                 testing$brushing)
 
-confusionMatrix(predict(glm_ensemble, newdata=testing, type='raw'), 
+confusionMatrix(predict(nnet_ensemble, newdata=testing, type='raw'), 
                 testing$brushing)
+
+
 
 stopCluster(cl)
 
