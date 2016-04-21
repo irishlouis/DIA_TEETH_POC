@@ -33,6 +33,10 @@ lapply(list("event1.plot","event2.plot","event3.plot",
             "event7.plot"), 
        cache)
 
+df1.zoomed <- df %>% 
+  filter(Timestamp > dmy_hms("20/01/2016 170321", tz = "GMT") & 
+           Timestamp < dmy_hms("20/01/2016 170326", tz = "GMT") ) %>%
+  plot.data
 
 ##### 
 # repeat for subject 2 Louis
