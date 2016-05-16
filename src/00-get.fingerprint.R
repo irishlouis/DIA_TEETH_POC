@@ -22,24 +22,18 @@ brushing.fingerprint.mean <- Reduce('+', brushing.summary.mean) / length(brushin
 brushing.fingerprint.mean <- t(brushing.fingerprint.mean)
 
 # get peak summary for each training minute
-peak.summary <- lapply(training.minutes, function(x)
+peak.summary <- do.call(rbind, lapply(training.minutes, function(x)
   (tmp %>% 
      filter(time_minute == x) %>% 
      select(vector.mag) %>% 
      apply(.,2, 
-           function(v) get.peak.summary(v, k=10, freq=100)) %>% t())
-)
+           function(v) get.peak.summary(v, k=10, freq=100)) %>% unlist())
+))
 
 # get summaries of peak data
-peak.summary.averages <- sapply(peak.summary, function(x) x[1,]) %>% apply(1, mean)
-peak.per.sec.sd <- sapply(peak.summary, function(x) x[1,]) %>% apply(1, sd)
+peak.summary.averages <- as.data.frame(apply(peak.summary, MARGIN = 2, mean) %>% t)
 
-peak.summary <- data.frame(avg.peaks.per.sec = peak.summary.averages[1],
-                           sd.peaks.per.sec = peak.per.sec.sd[2],
-                           avg.period = peak.summary.averages[2],
-                           sd.period = peak.summary.averages[3])
-
-brushing.fingerprint <- cbind(brushing.fingerprint.mean, peak.summary)
+brushing.fingerprint <- cbind(brushing.fingerprint.mean, peak.summary.averages)
 
 cache("brushing.fingerprint" )
 cache("training.minutes")
