@@ -24,9 +24,9 @@ set.seed(2345)
 model_list <- caretList(brushing ~ ., 
                         data=as.data.frame(training)[, -c(1:2)], 
                         trControl=my_control,
-                        methodList=c('rotationForest', 'xgbTree', 'ada', 'gbm',
+                        methodList=c('xgbTree', 'ada', 'gbm',
                                      'adaboost', 'rf', 'nnet', 
-                                     'svmRadial', 'rpart', 'glm'))
+                                     'svmRadial', 'rpart'))
 
 
 lapply(model_list, 
