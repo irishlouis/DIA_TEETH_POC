@@ -21,7 +21,7 @@ summary.df <- function(df, freq, k=10){
               Qu2 = quantile(value, .75),
               Max = max(value))
   
-  tmp <- do.call(rbind, lapply(times, function(t) peak.func(t, df, freq, k)))
+  tmp <- do.call(rbind, lapply(seq_along(times), function(t) peak.func(times[t], df, freq, k)))
   test.summary <- cbind(test.summary, tmp %>% select(-Timestamp)) 
   return(test.summary)
 }
