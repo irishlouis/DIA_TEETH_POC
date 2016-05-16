@@ -12,10 +12,15 @@ peak.func <- function(t, df, freq, k){
   tbl <- df %>% filter(time_minute == t) %>% 
     select(vector.mag) %>% 
     apply(.,2, function(x) get.peak.summary(v = x, k = k, freq = freq)) %>% 
-    t() %>% data.frame %>% mutate(Timestamp = t) 
-  if (nrow(tbl) == 1 & ncol(tbl) == 4){
+    unlist %>% t() %>% data.frame %>% mutate(Timestamp = t) 
+  if (nrow(tbl) == 1 & ncol(tbl) == 6 & is.numeric(tbl[1,1])){
     return(tbl)
   } else {
-    return(data.table(peaks.per.sec=0, avg.period=0,sd.period=0,Timestamp=t))  
+    return(data.table(vector.mag.peaks.per.sec=0, 
+                      vector.mag.avg.period=0,
+                      vector.mag.sd.period=0,
+                      vector.mag.avg.amp=0,
+                      vector.mag.sd.amp=0,
+                      Timestamp=t))  
   }
 }
