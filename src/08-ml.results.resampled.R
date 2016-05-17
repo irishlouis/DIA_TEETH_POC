@@ -43,4 +43,19 @@ resample.results <- do.call(rbind, lapply(seeds, function(s) {print(which(seeds 
 
 summary(resample.results)
 
+ggplot(melt(resample.results, varnames = c("sample_id", "method"), value.name = "kappa") %>% 
+         mutate(method = str_replace(method, ".Kappa", "")),
+       aes(x=method, y=kappa)) + 
+  geom_violin() +
+  geom_boxplot(fill = "grey", alpha = 0.25) + 
+  geom_point(alpha = 0.25) +
+  theme_bw() +
+  labs(title = "Kappa Results from Models for 30 partitions",
+       subtitle = "Significant variation in performance",
+       x="",
+       y="Kappa (%)") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5),
+         panel.grid.major.x = element_blank())
+         
+       
 cache("resample.results")
