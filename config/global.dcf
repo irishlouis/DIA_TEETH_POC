@@ -5,7 +5,7 @@ recursive_loading: FALSE
 munging: FALSE
 logging: FALSE
 load_libraries: TRUE
-libraries: reshape2, plyr, ggplot2, stringr, lubridate, dplyr, gridExtra, zoo, doParallel, data.table, caret, fpc, caretEnsemble, rotationForest, xgboost, ada, rpart, gbm, survival, fastAdaboost, randomForest, nnet, kernlab 
+libraries: reshape2, plyr, ggplot2, stringr, lubridate, dplyr, gridExtra, zoo, doParallel, data.table, caret, fpc, caretEnsemble, rotationForest, xgboost, ada, rpart, gbm, survival, fastAdaboost, randomForest, nnet, kernlab, scales
 as_factors: TRUE
 data_tables: FALSE
 attach_internal_libraries: FALSE
