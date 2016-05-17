@@ -30,15 +30,17 @@ checkModel <- function(seed){
                                        'svmRadial', 'rpart'))
   
   return(lapply(model_list, 
-         function(x) confusionMatrix(predict(x, testing), testing$brushing)$overall[2]) %>% unlist)
+                function(x) confusionMatrix(predict(x, testing), testing$brushing)$overall[2]) %>% unlist)
   stopCluster(cl)
 }
 
 set.seed(123123)
 # set how many runs to do
-n_resamples <- 3
+n_resamples <- 30
 seeds <- round(rep(runif(n_resamples, 1, 10000000)), 0)
 
-r <- do.call(rbind, lapply(seeds, function(s) {print(s); return(checkModel(s))}))
+resample.results <- do.call(rbind, lapply(seeds, function(s) {print(which(seeds ==s)); return(checkModel(s))}))
 
-summary(r)
+summary(resample.results)
+
+cache("resample.results")
