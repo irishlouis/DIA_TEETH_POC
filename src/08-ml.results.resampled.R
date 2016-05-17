@@ -53,9 +53,10 @@ ggplot(melt(resample.results, varnames = c("sample_id", "method"), value.name = 
   labs(title = "Kappa Results from Models for 30 partitions",
        subtitle = "Significant variation in performance",
        x="",
-       y="Kappa (%)") +
+       y="Kappa") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5),
-         panel.grid.major.x = element_blank())
+         panel.grid.major.x = element_blank()) +
+  scale_y_continuous(labels = percent)
          
-       
+  
 cache("resample.results")
