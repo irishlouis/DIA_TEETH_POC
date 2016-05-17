@@ -12,8 +12,10 @@ similarity.euclidean <- function(brushing.fingerprint, d, close){
       sqrt(sum(((brushing.fingerprint$Mean-d$Mean)/brushing.fingerprint$Mean)^2)) +
       # sqrt(sum(((brushing.fingerprint$Qu3rd-d$Qu2)/brushing.fingerprint$Qu3rd)^2)) +
       # sqrt(sum(((brushing.fingerprint$mean.dir5[4]-max(d$per.vec.dir5[4], 0, na.rm = T))/brushing.fingerprint$mean.dir5[4])^2)) +
-      sqrt(sum(((brushing.fingerprint$avg.period - d$avg.period)/brushing.fingerprint$avg.period)^2)) +
-      0.5 * sqrt(sum(((brushing.fingerprint$sd.period - d$sd.period)/brushing.fingerprint$sd.period)^2)) +
-      sqrt(sum(((brushing.fingerprint$peaks.per.sec - d$peaks.per.sec)/brushing.fingerprint$peaks.per.sec)^2))
+      sqrt(sum(((brushing.fingerprint$vector.mag.peaks.per.sec - d$vector.mag.peaks.per.sec)/brushing.fingerprint$vector.mag.peaks.per.sec)^2)) +
+      sqrt(sum(((brushing.fingerprint$vector.mag.avg.period - d$vector.mag.avg.period)/brushing.fingerprint$vector.mag.avg.period)^2)) +
+      0.5 * sqrt(sum(((brushing.fingerprint$vector.mag.sd.period - d$vector.mag.sd.period)/brushing.fingerprint$vector.mag.sd.period)^2)) +
+      sqrt(sum(((brushing.fingerprint$vector.mag.avg.amp - d$vector.mag.avg.amp)/brushing.fingerprint$vector.mag.avg.amp)^2)) +
+      sqrt(sum(((brushing.fingerprint$vector.mag.sd.amp - d$vector.mag.sd.amp)/brushing.fingerprint$vector.mag.sd.amp)^2))
   )
 }
