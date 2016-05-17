@@ -59,32 +59,36 @@ dt[,lapply(.SD, summary), test_type]
 setkey(dt, test_type)
 
 ggplot(melt(dt["validation"], id.vars = "test_type", value.name = "kappa") %>% 
-         mutate(method = str_replace(variable, ".Kappa", "")),
+         mutate(variable = str_replace(variable, ".Kappa", "")),
        aes(x=variable, y=kappa)) + 
   geom_violin() +
   geom_boxplot(fill = "grey", alpha = 0.25) + 
   geom_point(alpha = 0.25) +
   theme_bw() +
-  labs(title = "Kappa Results from Models for 30 partitions",
-       subtitle = "Significant variation in performance",
+  labs(title = "Kappa Results from Models - 30 Data Partitions",
+       subtitle = "The evaluation results of models trained & tested on Subject A show significant variation in performance depending on the data split.
+In general models are showing strong predictive power.",
+       caption = "Grey box represents IQR with Median\nViolin plot shows distribution",
        x="",
-       y="Kappa") +
+       y="") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5),
          panel.grid.major.x = element_blank()) +
   scale_y_continuous(labels = percent)
          
   
 ggplot(melt(dt["new_subj"], id.vars = "test_type", value.name = "kappa") %>% 
-         mutate(method = str_replace(variable, ".Kappa", "")),
+         mutate(variable = str_replace(variable, ".Kappa", "")),
        aes(x=variable, y=kappa)) + 
   geom_violin() +
   geom_boxplot(fill = "grey", alpha = 0.25) + 
   geom_point(alpha = 0.25) +
   theme_bw() +
-  labs(title = "Kappa Results from Models generalised to new subject for 30 partitions",
-       subtitle = "Significant variation in performance",
+  labs(title = "Kappa Results for Predicting Unseen Subject - 30 Data Partitions",
+       subtitle = "Using model trained on Subject A's teeth brushing pattern and using it classify periods of brushing for Subject B shows some predictive power.
+Again variance in performance indicates the sensitivity of model to the training / testing partition",
+       caption = "Grey box represents IQR with Median\nViolin plot shows distribution",
        x="",
-       y="Kappa") +
+       y="") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5),
         panel.grid.major.x = element_blank()) +
   scale_y_continuous(labels = percent)
