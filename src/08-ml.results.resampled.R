@@ -71,7 +71,7 @@ In general models are showing strong predictive power.",
        caption = "Grey box represents IQR with Median\nViolin plot shows distribution",
        x="",
        y="") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5),
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 12),
          panel.grid.major.x = element_blank()) +
   scale_y_continuous(labels = percent)
          
@@ -89,8 +89,10 @@ Again variance in performance indicates the sensitivity of model to the training
        caption = "Grey box represents IQR with Median\nViolin plot shows distribution",
        x="",
        y="") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5),
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 12),
         panel.grid.major.x = element_blank()) +
   scale_y_continuous(labels = percent)
 
 cache("resample.results")
+
+
