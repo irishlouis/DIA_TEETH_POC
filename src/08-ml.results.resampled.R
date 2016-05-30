@@ -58,7 +58,7 @@ dt[,lapply(.SD, summary), test_type]
 
 setkey(dt, test_type)
 
-ggplot(melt(dt["validation"], id.vars = "test_type", value.name = "kappa") %>% 
+ggplot(melt(dt["validation"] %>% select(-nnet.Kappa, -rpart.Kappa), id.vars = "test_type", value.name = "kappa") %>% 
          mutate(variable = str_replace(variable, ".Kappa", "")),
        aes(x=variable, y=kappa)) + 
   geom_violin() +
@@ -66,8 +66,7 @@ ggplot(melt(dt["validation"], id.vars = "test_type", value.name = "kappa") %>%
   geom_point(alpha = 0.25) +
   theme_bw() +
   labs(title = "Kappa Results from Models - 30 Data Partitions",
-       subtitle = "The evaluation results of models trained & tested on Subject A show significant variation in performance depending on the data split.
-In general models are showing strong predictive power.",
+       subtitle = "The evaluation results of models trained & tested on Subject A show significant variation in performance\ndepending on the data split",
        caption = "Grey box represents IQR with Median\nViolin plot shows distribution",
        x="",
        y="") +
@@ -76,7 +75,7 @@ In general models are showing strong predictive power.",
   scale_y_continuous(labels = percent)
          
   
-ggplot(melt(dt["new_subj"], id.vars = "test_type", value.name = "kappa") %>% 
+ggplot(melt(dt["new_subj"] %>% select(-nnet.Kappa, -rpart.Kappa), id.vars = "test_type", value.name = "kappa") %>% 
          mutate(variable = str_replace(variable, ".Kappa", "")),
        aes(x=variable, y=kappa)) + 
   geom_violin() +
@@ -84,8 +83,7 @@ ggplot(melt(dt["new_subj"], id.vars = "test_type", value.name = "kappa") %>%
   geom_point(alpha = 0.25) +
   theme_bw() +
   labs(title = "Kappa Results for Predicting Unseen Subject - 30 Data Partitions",
-       subtitle = "Using model trained on Subject A's teeth brushing pattern and using it classify periods of brushing for Subject B shows some predictive power.
-Again variance in performance indicates the sensitivity of model to the training / testing partition",
+       subtitle = "Using model trained on Subject A's teeth brushing pattern and using it classify periods of brushing\nfor Subject B shows some predictive power. Variance shows sensitivity to the training / testing partition",
        caption = "Grey box represents IQR with Median\nViolin plot shows distribution",
        x="",
        y="") +
