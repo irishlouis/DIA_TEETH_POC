@@ -58,7 +58,7 @@ dt[,lapply(.SD, summary), test_type]
 
 setkey(dt, test_type)
 
-ggplot(melt(dt["validation"] %>% select(-nnet.Kappa, -rpart.Kappa), id.vars = "test_type", value.name = "kappa") %>% 
+p1<-ggplot(melt(dt["validation"] %>% select(-nnet.Kappa, -rpart.Kappa), id.vars = "test_type", value.name = "kappa") %>% 
          mutate(variable = str_replace(variable, ".Kappa", "")),
        aes(x=variable, y=kappa)) + 
   geom_violin() +
@@ -67,15 +67,21 @@ ggplot(melt(dt["validation"] %>% select(-nnet.Kappa, -rpart.Kappa), id.vars = "t
   theme_bw() +
   labs(title = "Kappa Results from Models - 30 Data Partitions",
        subtitle = "The evaluation results of models trained & tested on Subject A show significant variation in performance\ndepending on the data split",
-       caption = "Grey box represents IQR with Median\nViolin plot shows distribution",
+       # caption = "Grey box represents IQR with Median\nViolin plot shows distribution",
        x="",
        y="") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 12),
          panel.grid.major.x = element_blank()) +
   scale_y_continuous(labels = percent)
-         
+
+p1
+
+# print plot to pdf
+pdf("evalResults.pdf",width = 8, height = 4, compress = FALSE )
+p1
+dev.off()
   
-ggplot(melt(dt["new_subj"] %>% select(-nnet.Kappa, -rpart.Kappa), id.vars = "test_type", value.name = "kappa") %>% 
+p2 <- ggplot(melt(dt["new_subj"] %>% select(-nnet.Kappa, -rpart.Kappa), id.vars = "test_type", value.name = "kappa") %>% 
          mutate(variable = str_replace(variable, ".Kappa", "")),
        aes(x=variable, y=kappa)) + 
   geom_violin() +
@@ -84,12 +90,18 @@ ggplot(melt(dt["new_subj"] %>% select(-nnet.Kappa, -rpart.Kappa), id.vars = "tes
   theme_bw() +
   labs(title = "Kappa Results for Predicting Unseen Subject - 30 Data Partitions",
        subtitle = "Using model trained on Subject A's teeth brushing pattern and using it classify periods of brushing\nfor Subject B shows some predictive power. Variance shows sensitivity to the training / testing partition",
-       caption = "Grey box represents IQR with Median\nViolin plot shows distribution",
+      # caption = "Grey box represents IQR with Median\nViolin plot shows distribution",
        x="",
        y="") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 12),
         panel.grid.major.x = element_blank()) +
   scale_y_continuous(labels = percent)
+p2
+
+# print plot to pdf
+pdf("unseenResults.pdf",width = 8, height = 4, compress = FALSE )
+p2
+dev.off()
 
 cache("resample.results")
 
